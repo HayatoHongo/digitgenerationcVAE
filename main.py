@@ -55,19 +55,23 @@ model.eval()
 st.title("Conditional Variational Autoencoder (CVAE) Generator")
 st.write("### 数字を選択して、対応する画像を生成")
 
-# ユーザー入力
-digit = st.selectbox("生成する数字 (0-9)", list(range(10)), index=0)
+# サイドバーで生成する枚数を指定
+num_samples = st.sidebar.slider("生成する枚数", min_value=1, max_value=10, value=1)
+digit = st.sidebar.selectbox("生成する数字 (0-9)", list(range(10)), index=0)
 
-generate_button = st.button("画像を生成")
+generate_button = st.sidebar.button("画像を生成")
 
 if generate_button:
-    z_random_vector = torch.randn(1, 3).to(device)
-    label = torch.tensor([digit], dtype=torch.long, device=device)
+    z_random_vector = torch.randn(num_samples, 3).to(device)
+    label = torch.full((num_samples,), digit, dtype=torch.long, device=device)
     
     with torch.no_grad():
         x_gen = model.decoder(z_random_vector, label)
     
-    fig, ax = plt.subplots()
-    ax.imshow(x_gen.squeeze().cpu().numpy(), cmap='gray')
-    ax.axis('off')
+    fig, axes = plt.subplots(1, num_samples, figsize=(num_samples * 2, 2))
+    if num_samples == 1:
+        axes = [axes]
+    for i in range(num_samples):
+        axes[i].imshow(x_gen[i].squeeze().cpu().numpy(), cmap='gray')
+        axes[i].axis('off')
     st.pyplot(fig)
