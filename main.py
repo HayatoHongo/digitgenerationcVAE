@@ -62,7 +62,7 @@ digit = st.sidebar.selectbox("生成する数字 (0-9)", list(range(10)), index=
 generate_button = st.sidebar.button("画像を生成")
 
 if generate_button:
-    z_random_vector = torch.randn(num_samples, 3).to(device) * 0.1
+    z_random_vector = torch.randn(num_samples, 3).to(device)
     label = torch.full((num_samples,), digit, dtype=torch.long, device=device)
     
     with torch.no_grad():
