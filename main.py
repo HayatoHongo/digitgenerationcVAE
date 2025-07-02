@@ -5,7 +5,7 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 import numpy as np
 
-# モデルの定義
+# Model definition
 class Encoder(nn.Module):
     def __init__(self, latent_dim=3, num_classes=10):
         super().__init__()
@@ -43,23 +43,23 @@ class CVAE(nn.Module):
         self.encoder = Encoder(latent_dim, num_classes)
         self.decoder = Decoder(latent_dim, num_classes)
 
-# デバイス設定
+# Device setting
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# モデルのロード
+# Load model
 model = CVAE(latent_dim=3, num_classes=10).to(device)
 model.load_state_dict(torch.load("cvae.pth", map_location=device))
 model.eval()
 
 # Streamlit UI
 st.title("Conditional Variational Autoencoder (CVAE) Generator")
-st.write("### 数字を選択して、対応する画像を生成")
+st.write("### Select a digit to generate the corresponding image")
 
-# サイドバーで生成する枚数を指定
-num_samples = st.sidebar.slider("生成する枚数", min_value=1, max_value=10, value=1)
-digit = st.sidebar.selectbox("生成する数字 (0-9)", list(range(10)), index=0)
+# Specify the number of samples to generate in the sidebar
+num_samples = st.sidebar.slider("Number of images to generate", min_value=1, max_value=10, value=1)
+digit = st.sidebar.selectbox("Digit to generate (0-9)", list(range(10)), index=0)
 
-generate_button = st.sidebar.button("画像を生成")
+generate_button = st.sidebar.button("Generate Image")
 
 if generate_button:
     z_random_vector = torch.randn(num_samples, 3).to(device)
