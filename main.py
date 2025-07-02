@@ -62,7 +62,7 @@ digit = st.sidebar.selectbox("Digit to generate (0-9)", list(range(10)), index=0
 generate_button = st.sidebar.button("Generate Image")
 
 if generate_button:
-    z_random_vector = torch.randn(num_samples, 3).to(device)
+    z_random_vector = torch.randn(num_samples, 3).to(device) * 0.1
     label = torch.full((num_samples,), digit, dtype=torch.long, device=device)
     
     with torch.no_grad():
